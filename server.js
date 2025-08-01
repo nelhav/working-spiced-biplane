@@ -2081,7 +2081,7 @@ async function pdfToPngSender(channelId, mes, pngJ) {
         String(Number(page)) +
         "ページ目" +
         String(comIs);
-      let options = { flags: null, files: pngArray, fileFromAtb: "Y", emojis: null };
+      let options = { ext: "ext", flags: null, files: pngArray, fileFromAtb: "Y", emojis: null };
       /*fs.writeFileSync(String(name), bufferIs);*/ //テスト用
       await sendMsgWithFrags(channelId, mes2, options);
       page2 = Number(page) + 1;
