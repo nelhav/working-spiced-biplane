@@ -2081,7 +2081,7 @@ async function pdfToPngSender(channelId, mes, pngJ) {
         String(Number(page)) +
         "ページ目" +
         String(comIs);
-      let options = { flags: null, files: pngArray, emojis: null };
+      let options = { flags: null, files: pngArray, filesFromBuf: "fromBuf", emojis: null };
       /*fs.writeFileSync(String(name), bufferIs);*/ //テスト用
       await sendMsgWithFrags(channelId, mes2, options);
       page2 = Number(page) + 1;
@@ -2754,21 +2754,43 @@ async function webhook1(settings) {
 //メッセージ送信（添付ファイルなど）
 async function sendMsgWithFrags(channelId, text, options) {
   try {
-    let flags = options.flags,
-      files = options.files,
-      emojis = options.emojis;
-    if (files != undefined && files != null && files[0].search(/^base64File/) > -1) {
+    let flags = null,
+      files = null,
+      emojis = null,
+      reply = null,
+      allowedMentions = null;
+    if (options != undefined && options != null && options.ext != null) {
+      (flags = options.flags),
+        (files = options.files),
+        (emojis = options.emojis),
+        (reply = options.reply),
+        (allowedMentions = options.allowedMentions);
+    }
+    if (files != undefined && files != null && filesFromBuf == undefined && files[0].search(/^base64File/) > -1) {
       let fileData = files[0].split(",");
       console.log(fileData[1]);
       let buffer = Buffer.from(String(fileData[2]), "base64");
       files = [new AttachmentBuilder(buffer, { name: String(fileData[1]) })];
     }
-    let option = { flags, files };
+    if (reply != undefined && reply != null) {
+      reply = { messageReference: String(reply) };
+    }else{reply = { messageReference: null };}
+    if (allowedMentions != undefined && allowedMentions != null) {
+      allowedMentions = { parse: allowedMentions };
+    }
+
+    let option = { flags, files, reply, allowedMentions };
     let emojiStr;
     console.log("bbbbbbb", channelId, text, options);
     let sentMes = await client.channels.cache
       .get(channelId)
-      .send({ content: text, flags: flags, files: files })
+      .send({
+        content: text,
+        flags: flags,
+        files: files,
+        reply: reply,
+        allowedMentions: allowedMentions,
+      })
       .then(console.log("メッセージ送信: " + text + JSON.stringify(option)))
       .catch(console.error);
     if (emojis != null && emojis.length > 0) {
