@@ -2064,7 +2064,7 @@ async function pdfToPngSender(channelId, mes, pngJ) {
     name = String(pngs[i][0]);
     const bufferIs = Buffer.from(String(pngs[i][1]), "base64");
     const attachment = new AttachmentBuilder(bufferIs, { name: String(name) });
-    pngArray.push([attachment]);
+    pngArray.push(attachment);
     if (
       Number(i) == pngs.length - 1 &&
       String(comment) == "Specify pdf pages under 49pcs."
