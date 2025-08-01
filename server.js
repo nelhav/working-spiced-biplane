@@ -2062,9 +2062,9 @@ async function pdfToPngSender(channelId, mes, pngJ) {
   for (let i = 0; i < pngs.length; i++) {
     page++;
     name = String(pngs[i][0]);
-    const bufferIs = Buffer.from(String(pngs[i][1]), "base64");
-    const attachment = new AttachmentBuilder(bufferIs, { name: String(name) });
-    pngArray.push(attachment);
+    /*const bufferIs = Buffer.from(String(pngs[i][1]), "base64");
+    const attachment = new AttachmentBuilder(bufferIs, { name: String(name) });*/
+    pngArray.push(["base64File," + String(name) + "," + String(pngs[i][1])]);
     if (
       Number(i) == pngs.length - 1 &&
       String(comment) == "Specify pdf pages under 49pcs."
@@ -2081,7 +2081,7 @@ async function pdfToPngSender(channelId, mes, pngJ) {
         String(Number(page)) +
         "ページ目" +
         String(comIs);
-      let options = { flags: null, files: pngArray, filesFromBuf: "fromBuf", emojis: null };
+      let options = { flags: null, files: pngArray, emojis: null };
       /*fs.writeFileSync(String(name), bufferIs);*/ //テスト用
       await sendMsgWithFrags(channelId, mes2, options);
       page2 = Number(page) + 1;
@@ -2762,7 +2762,7 @@ async function sendMsgWithFrags(channelId, text, options) {
         (files = options.files),
         (emojis = options.emojis);
     }
-    if (files != undefined && files != null && filesFromBuf == undefined && files[0].search(/^base64File/) > -1) {
+    if (files != undefined && files != null && files[0].search(/^base64File/) > -1) {
       let fileData = files[0].split(",");
       console.log(fileData[1]);
       let buffer = Buffer.from(String(fileData[2]), "base64");
