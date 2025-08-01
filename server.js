@@ -2756,15 +2756,11 @@ async function sendMsgWithFrags(channelId, text, options) {
   try {
     let flags = null,
       files = null,
-      emojis = null,
-      reply = null,
-      allowedMentions = null;
+      emojis = null;
     if (options != undefined && options != null && options.ext != null) {
       (flags = options.flags),
         (files = options.files),
-        (emojis = options.emojis),
-        (reply = options.reply),
-        (allowedMentions = options.allowedMentions);
+        (emojis = options.emojis);
     }
     if (files != undefined && files != null && filesFromBuf == undefined && files[0].search(/^base64File/) > -1) {
       let fileData = files[0].split(",");
@@ -2772,14 +2768,7 @@ async function sendMsgWithFrags(channelId, text, options) {
       let buffer = Buffer.from(String(fileData[2]), "base64");
       files = [new AttachmentBuilder(buffer, { name: String(fileData[1]) })];
     }
-    if (reply != undefined && reply != null) {
-      reply = { messageReference: String(reply) };
-    }else{reply = { messageReference: null };}
-    if (allowedMentions != undefined && allowedMentions != null) {
-      allowedMentions = { parse: allowedMentions };
-    }
-
-    let option = { flags, files, reply, allowedMentions };
+    let option = { flags, files };
     let emojiStr;
     console.log("bbbbbbb", channelId, text, options);
     let sentMes = await client.channels.cache
@@ -2788,8 +2777,6 @@ async function sendMsgWithFrags(channelId, text, options) {
         content: text,
         flags: flags,
         files: files,
-        reply: reply,
-        allowedMentions: allowedMentions,
       })
       .then(console.log("メッセージ送信: " + text + JSON.stringify(option)))
       .catch(console.error);
