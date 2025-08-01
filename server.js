@@ -2762,7 +2762,7 @@ async function sendMsgWithFrags(channelId, text, options) {
         (files = options.files),
         (emojis = options.emojis);
     }
-    if (files != undefined && files != null && options.fileFromAtb != undefined && files[0].search(/^base64File/) > -1) {
+    if (files != undefined && files != null && options.fileFromAtb == undefined && files[0].search(/^base64File/) > -1) {
       let fileData = files[0].split(",");
       console.log(fileData[1]);
       let buffer = Buffer.from(String(fileData[2]), "base64");
